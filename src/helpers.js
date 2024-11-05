@@ -32,15 +32,18 @@ export const getInit = (props) => `<html>
                                         }
                                         ${
                                           props.enableVariablePie
-                                            ? '<script src="https://code.highcharts.com/modules/variable-pie.js"></script>'
+                                            ? (Platform.OS === 'ios' ? `<script type='text/javascript' src="${RNFS.MainBundlePath}/assets/resources/images/variable-pie.js"></script>`
+                                              : `<script type='text/javascript' src="file:///android_asset/js/variable-pie.js"></script>`)
                                             : ''
                                         }
                                         ${
                                           props.guage
-                                            ? '<script src="https://code.highcharts.com/modules/solid-gauge.js"></script>'
+                                            ? (Platform.OS === 'ios' ? `<script type='text/javascript' src="${RNFS.MainBundlePath}/assets/resources/images/solid-gauge.js"></script>`
+                                              : `<script type='text/javascript' src="file:///android_asset/js/solid-gauge.js"></script>`)
                                             : ''
                                         }
-                                        <script src="https://code.highcharts.com/modules/exporting.js"></script>
+                                        ${Platform.OS === 'ios' ? `<script type='text/javascript' src="${RNFS.MainBundlePath}/assets/resources/images/exporting.js"></script>`
+                                              : `<script type='text/javascript' src="file:///android_asset/js/exporting.js"></script>`}
                                         <script>
                                         document.addEventListener("DOMContentLoaded", function(event) {
                                             Highcharts.setOptions(${JSON.stringify(
