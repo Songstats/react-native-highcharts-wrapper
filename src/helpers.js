@@ -29,7 +29,7 @@ export const getInit = (props) => `<html>
                                         ${Platform.OS === 'ios' ? `<script type='text/javascript' src="${RNFS.MainBundlePath}/assets/resources/images/variable-pie.js"></script>`
                                               : `<script type='text/javascript' src="file:///android_asset/js/variable-pie.js"></script>`}
                                         ${Platform.OS === 'ios' ? `<script type='text/javascript' src="${RNFS.MainBundlePath}/assets/resources/images/solid-gauge.js"></script>`
-                                              : `<script type='text/javascript' src="file:///android_asset/js/solid-gauge.js"></script>}
+                                              : `<script type='text/javascript' src="file:///android_asset/js/solid-gauge.js"></script>`}
                                         ${Platform.OS === 'ios' ? `<script type='text/javascript' src="${RNFS.MainBundlePath}/assets/resources/images/wordcloud.js"></script>`
                                               : `<script type='text/javascript' src="file:///android_asset/js/wordcloud.js"></script>`}
                                         ${Platform.OS === 'ios' ? `<script type='text/javascript' src="${RNFS.MainBundlePath}/assets/resources/images/exporting.js"></script>`
