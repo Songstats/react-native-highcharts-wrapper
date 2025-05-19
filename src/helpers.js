@@ -42,6 +42,12 @@ export const getInit = (props) => `<html>
                                               : `<script type='text/javascript' src="file:///android_asset/js/solid-gauge.js"></script>`)
                                             : ''
                                         }
+                                        ${
+                                          props.worldcloud
+                                            ? (Platform.OS === 'ios' ? `<script type='text/javascript' src="${RNFS.MainBundlePath}/assets/resources/images/wordcloud.js"></script>`
+                                              : `<script type='text/javascript' src="file:///android_asset/js/wordcloud.js"></script>`)
+                                            : ''
+                                        }
                                         ${Platform.OS === 'ios' ? `<script type='text/javascript' src="${RNFS.MainBundlePath}/assets/resources/images/exporting.js"></script>`
                                               : `<script type='text/javascript' src="file:///android_asset/js/exporting.js"></script>`}
                                         <script>
