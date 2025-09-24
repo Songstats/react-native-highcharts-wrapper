@@ -1,14 +1,68 @@
 import React, { Component } from 'react';
 import { WebView } from 'react-native-webview';
-import { View } from 'react-native';
+import { View, AppState } from 'react-native';
 
 import styles from './styles';
 import { getInit, getEnd, flattenObject } from './helpers';
 
 class Chart extends Component {
+  constructor(props) {
+    super(props);
+    this.webViewRef = React.createRef();
+    this.state = { key: 0 };
+  }
 
-  shouldComponentUpdate(nextProps) {
-    return (this.props.nameForReload !== nextProps.nameForReload); //Using this prop to tell when to re-render
+  componentDidMount() {
+    this.appStateSubscription = AppState.addEventListener('change', this.handleAppStateChange);
+  }
+
+  componentWillUnmount() {
+    if (this.appStateSubscription) {
+      this.appStateSubscription.remove();
+    }
+  }
+
+  handleAppStateChange = (nextAppState) => {
+    if (nextAppState === 'active') {
+      this.reflowCharts();
+    }
+  };
+
+  reflowCharts = () => {
+    const reflowScript = `
+      (function(){
+        try {
+          if (window.Highcharts && window.Highcharts.charts) {
+            window.Highcharts.charts.forEach(function(chart) {
+              if (chart && chart.reflow) {
+                chart.reflow();
+              }
+            });
+          }
+        } catch(e) {
+          console.log('Highcharts reflow error:', e);
+        }
+      })();
+      true;
+    `;
+    
+    if (this.webViewRef.current) {
+      this.webViewRef.current.injectJavaScript(reflowScript);
+    }
+  };
+
+  handleContentProcessTerminate = () => {
+    if (this.webViewRef.current) {
+      this.webViewRef.current.reload();
+    }
+  };
+
+  handleRenderProcessGone = (event) => {
+    this.setState({ key: this.state.key + 1 });
+  };
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return (this.props.nameForReload !== nextProps.nameForReload) || (this.state.key !== nextState.key);
   }
 
   render() {
@@ -23,6 +77,8 @@ class Chart extends Component {
     return (
       <View style={this.props.style}>
         <WebView
+          key={this.state.key}
+          ref={this.webViewRef}
           style={styles.full}
           source={{ html: concatHTML, baseUrl: 'web/' }}
           javaScriptEnabled={true}
@@ -30,6 +86,8 @@ class Chart extends Component {
           scalesPageToFit={true}
           scrollEnabled={false}
           automaticallyAdjustContentInsets={true}
+          onContentProcessDidTerminate={this.handleContentProcessTerminate}
+          onRenderProcessGone={this.handleRenderProcessGone}
           {...this.props}
         />
       </View>
